@@ -1,0 +1,407 @@
+/* =============================================================
+   MDUI 组件子集（按 Material Design 3 规范本地化实现，零外链）
+   - 形状：8 / 12 / 16 / 28 / full 五级圆角（按钮用 full，M3 标志性"胶囊按钮"）
+   - 阴影：M3 elevation level 1-3，低透明多层，无发光
+   - 状态层：hover 8% / focus 10% / pressed 10%
+   - 动效：standard cubic-bezier(.2,0,0,1) 与 emphasized-decelerate，禁用 ease-in-out
+   ============================================================= */
+:root{
+  --md-primary:var(--brand);
+  --md-on-primary:#FFFFFF;
+  --md-primary-container:var(--brand-soft);
+  --md-on-primary-container:var(--brand);
+  --md-surface:var(--surface);
+  --md-surface-container-lowest:var(--surface);
+  --md-surface-container-low:var(--surface-2);
+  --md-surface-container:var(--surface-2);
+  --md-surface-container-high:var(--surface-2);
+  --md-surface-container-highest:var(--surface-3);
+  --md-outline:var(--border);
+  --md-outline-variant:var(--border);
+  --md-on-surface:var(--text);
+  --md-on-surface-variant:var(--text-2);
+  --md-inverse-surface:#2E2D2B;
+  --md-inverse-on-surface:#F5F4F1;
+
+  --md-elev-0:none;
+  --md-elev-1:0 1px 2px rgba(0,0,0,.13),0 1px 3px 1px rgba(0,0,0,.06);
+  --md-elev-2:0 1px 2px rgba(0,0,0,.13),0 2px 6px 2px rgba(0,0,0,.08);
+  --md-elev-3:0 2px 4px 1px rgba(0,0,0,.10),0 4px 10px 3px rgba(0,0,0,.05);
+
+  --md-shape-xs:4px; --md-shape-s:8px; --md-shape-m:12px;
+  --md-shape-l:16px; --md-shape-xl:28px; --md-shape-full:999px;
+
+  --md-ease-std:cubic-bezier(.2,0,0,1);
+  --md-ease-dec:cubic-bezier(.05,.7,.1,1);
+  --md-ease-acc:cubic-bezier(.3,0,.8,.15);
+  --md-dur-s1:60ms; --md-dur-s3:160ms; --md-dur-m2:260ms; --md-dur-l1:420ms;
+}
+html[data-theme="dark"]{
+  --md-inverse-surface:#E5E1DA;
+  --md-inverse-on-surface:#1A1917;
+  --md-elev-1:0 1px 2px rgba(0,0,0,.5),0 1px 3px 1px rgba(0,0,0,.35);
+  --md-elev-2:0 1px 3px rgba(0,0,0,.55),0 2px 6px 2px rgba(0,0,0,.4);
+  --md-elev-3:0 2px 5px rgba(0,0,0,.6),0 5px 12px 3px rgba(0,0,0,.45);
+}
+
+/* ---------- 顶栏 Top App Bar（small: 64px，移动端 56px） ---------- */
+.mdui-appbar{
+  position:relative;z-index:20;flex:0 0 auto;
+  background:var(--md-surface);
+  padding-top:var(--safe-t);
+  transition:box-shadow var(--md-dur-m2) var(--md-ease-std),background var(--md-dur-m2) var(--md-ease-std);
+}
+.mdui-appbar--scrolled{box-shadow:var(--md-elev-2)}
+.mdui-toolbar{
+  display:flex;align-items:center;gap:12px;
+  min-height:56px;padding:0 16px;
+}
+.mdui-toolbar__title{font-size:16px;font-weight:600;letter-spacing:.01em;line-height:1.2;min-width:0}
+.mdui-toolbar__subtitle{display:block;white-space:nowrap;font-size:9px;font-weight:500;letter-spacing:.14em;color:var(--text-3);line-height:1.2;margin-top:2px}
+.mdui-toolbar__spacer{flex:1 1 auto}
+
+/* ---------- 按钮：M3 五种形态，full 圆角 ---------- */
+.mdui-btn,.btn{
+  position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:44px;padding:0 22px;border:1px solid transparent;
+  border-radius:var(--md-shape-full);
+  font-size:14px;font-weight:600;letter-spacing:.02em;line-height:1;
+  background:var(--md-primary);color:var(--md-on-primary);
+  box-shadow:var(--md-elev-0);
+  transition:background var(--md-dur-s3) var(--md-ease-std),box-shadow var(--md-dur-s3) var(--md-ease-std),
+             color var(--md-dur-s3) var(--md-ease-std),border-color var(--md-dur-s3) var(--md-ease-std),
+             transform var(--md-dur-s1) var(--md-ease-std);
+}
+.mdui-btn:hover,.btn:hover{background:var(--brand-hover);box-shadow:var(--md-elev-1)}
+.mdui-btn:active,.btn:active{transform:scale(.98)}
+.mdui-btn:disabled,.btn:disabled{opacity:.45;pointer-events:none;box-shadow:none}
+/* tonal：主色容器底，弱一档 */
+.mdui-btn--tonal{background:var(--md-primary-container);color:var(--md-on-primary-container);box-shadow:none}
+.mdui-btn--tonal:hover{background:var(--md-primary-container);box-shadow:var(--md-elev-1)}
+/* outlined：描边按钮 */
+.mdui-btn--outlined,.btn.ghost{
+  background:transparent;color:var(--md-primary);border-color:var(--md-outline);
+  box-shadow:none;
+}
+.mdui-btn--outlined:hover,.btn.ghost:hover{background:color-mix(in srgb,var(--md-primary) 8%,transparent);border-color:var(--brand)}
+/* text：纯文字 */
+.mdui-btn--text{background:transparent;color:var(--md-primary);padding:0 12px;box-shadow:none}
+.mdui-btn--text:hover{background:color-mix(in srgb,var(--md-primary) 8%,transparent);box-shadow:none}
+/* 尺寸 */
+.mdui-btn--sm,.btn.sm{height:34px;padding:0 16px;font-size:13px}
+.mdui-btn--block,.btn.block{display:flex;width:100%}
+.mdui-btn svg,.btn svg{flex:0 0 auto}
+
+/* ---------- 涟漪 ---------- */
+/* 波纹样式不依赖父元素类名：只要 JS 注入了波纹，它就一定是绝对定位的圆形。
+   否则未被裁剪的波纹会以页面为定位基准，按一下就炸出一大块错位圆斑。 */
+.mdui-ripple-wave{
+  position:absolute;border-radius:50%;pointer-events:none;
+  background:currentColor;transform:scale(0);
+}
+/* 每条涟漪目标都必须同时具备"定位基准 + 裁剪边界"，二者缺一就会溢出 */
+.mdui-ripple,.btn,.row-item,.mdui-icon-btn,.mdui-list-item,
+.opt,.opt-q,.md,.know-h,.drill,.mdui-tab,.mdui-fab{
+  position:relative;overflow:hidden;
+  /* 长按不弹出系统菜单、双击不放大，避免移动端按压出现额外行为 */
+  -webkit-touch-callout:none;touch-action:manipulation;
+}
+
+/* ---------- 卡片：filled / outlined / elevated ---------- */
+.mdui-card,.card{
+  position:relative;
+  background:var(--md-surface-container-low);
+  border:1px solid var(--md-outline-variant);
+  border-radius:var(--md-shape-m);
+  box-shadow:var(--md-elev-0);
+  transition:box-shadow var(--md-dur-m2) var(--md-ease-std),border-color var(--md-dur-s3) var(--md-ease-std);
+}
+.mdui-card--elevated{background:var(--md-surface-container-low);border-color:transparent;box-shadow:var(--md-elev-1)}
+.mdui-card--filled{background:var(--md-surface-container-highest);border-color:transparent}
+.mdui-card--outlined{background:var(--md-surface);border-color:var(--md-outline)}
+.mdui-card--interactive:hover,.card.drill:hover{box-shadow:var(--md-elev-2)}
+
+/* ---------- 列表：M3 list，56 / 72px 行高 ---------- */
+.mdui-list{display:flex;flex-direction:column;gap:8px}
+.mdui-list-item,.row-item,.opt,.opt-q{
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;gap:10px;width:100%;
+  min-height:64px;padding:12px 16px;text-align:left;
+  background:var(--md-surface);border:1px solid var(--md-outline-variant);
+  border-radius:var(--md-shape-m);
+  transition:background var(--md-dur-s3) var(--md-ease-std),border-color var(--md-dur-s3) var(--md-ease-std),
+             box-shadow var(--md-dur-m2) var(--md-ease-std);
+}
+.mdui-list-item:hover,.row-item:hover,.opt:hover,.opt-q:hover{border-color:var(--border-strong);box-shadow:var(--md-elev-1)}
+.mdui-list-item__icon,.row-item .ic{
+  flex:0 0 auto;width:40px;height:40px;border-radius:var(--md-shape-m);
+  display:grid;place-items:center;
+  background:color-mix(in srgb,var(--c,var(--md-primary)) 12%,transparent);
+  color:color-mix(in srgb,var(--c,var(--md-primary)) 88%,var(--text));
+}
+.mdui-list-item__body,.row-item .body{flex:1 1 auto;min-width:0}
+.mdui-list-item__headline,.row-item h4{display:block;font-size:14px;font-weight:600;letter-spacing:.01em;line-height:1.4}
+.mdui-list-item__supporting,.row-item p{display:block;font-size:12px;color:var(--md-on-surface-variant);line-height:1.5;margin-top:2px}
+.mdui-list-item__trailing,.row-item .arrow{flex:0 0 auto;color:var(--text-4)}
+
+/* ---------- Chip：assist / filter / input ---------- */
+.mdui-chip,.pill,.chip{
+  display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 12px;
+  border-radius:var(--md-shape-s);
+  font-size:12px;font-weight:500;line-height:1;
+  background:transparent;color:var(--md-on-surface-variant);
+  border:1px solid var(--md-outline);
+  transition:background var(--md-dur-s3) var(--md-ease-std),color var(--md-dur-s3) var(--md-ease-std),
+             border-color var(--md-dur-s3) var(--md-ease-std);
+}
+.mdui-chip--selected,.chip.on{background:var(--md-primary);border-color:var(--md-primary);color:var(--md-on-primary)}
+.mdui-chip:hover,.chip:hover{border-color:var(--border-strong)}
+.mdui-chip--ok,.pill.ok{background:var(--ok-soft);border-color:var(--ok-border);color:var(--ok)}
+.mdui-chip--warn,.pill.warn{background:var(--warn-soft);border-color:var(--warn-border);color:var(--warn)}
+.mdui-chip--danger,.pill.danger{background:var(--danger-soft);border-color:var(--danger-border);color:var(--danger)}
+
+/* ---------- 线性进度 ---------- */
+.mdui-progress,.bar-wrap,.lvl,.prog{
+  position:relative;width:100%;height:4px;border-radius:999px;
+  background:var(--md-surface-container-highest);overflow:hidden;
+}
+.mdui-progress__bar,.mdui-progress>b,.bar-in,.lvl i,.prog i{
+  display:block;height:100%;width:0;border-radius:999px;background:var(--md-primary);
+  transition:width var(--md-dur-l1) var(--md-ease-dec);
+}
+
+/* ---------- Snackbar ---------- */
+.mdui-snackbar,.toast{
+  position:absolute;left:50%;bottom:96px;z-index:80;
+  display:flex;align-items:center;gap:8px;
+  max-width:calc(100% - 32px);padding:14px 16px;
+  border-radius:var(--md-shape-s);
+  background:var(--md-inverse-surface);color:var(--md-inverse-on-surface);
+  font-size:13px;line-height:1.4;box-shadow:var(--md-elev-3);
+  /* 收起：加速曲线，短促离场，不拖住用户的下一步操作 */
+  transform:translate(-50%,12px);opacity:0;pointer-events:none;
+  transition:opacity var(--md-dur-s3) var(--md-ease-acc),transform var(--md-dur-s3) var(--md-ease-acc);
+}
+.mdui-snackbar.show,.toast.show{
+  opacity:1;transform:translate(-50%,0);
+  transition:opacity var(--md-dur-m2) var(--md-ease-std),transform var(--md-dur-l1) var(--md-ease-dec);
+}
+
+/* ---------- 底部导航栏 Navigation bar（M3：80px，选中项为胶囊指示器） ---------- */
+.mdui-nav-bar,.tabbar{
+  flex:0 0 auto;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);
+  align-items:center;
+  padding:8px 4px calc(8px + var(--safe-b));
+  background:var(--md-surface-container);border-top:1px solid var(--md-outline-variant);
+}
+.mdui-nav-item,.tab{
+  position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;
+  min-height:56px;padding:4px 0 2px;
+  font-size:12px;font-weight:500;letter-spacing:.01em;color:var(--md-on-surface-variant);
+  -webkit-tap-highlight-color:transparent;
+  transition:color var(--md-dur-s3) var(--md-ease-std);
+}
+.mdui-nav-item__indicator{
+  display:grid;place-items:center;width:56px;height:32px;border-radius:var(--md-shape-full);
+  background:transparent;
+  transition:background var(--md-dur-m2) var(--md-ease-std);
+}
+.mdui-nav-item svg{width:22px;height:22px}
+.mdui-nav-item.is-active,.tab.on{color:var(--md-on-surface);font-weight:600}
+.mdui-nav-item.is-active .mdui-nav-item__indicator,.tab.on .ico{background:var(--md-surface-container-highest)}
+.mdui-nav-item:active .mdui-nav-item__indicator,.tab:active .ico{transform:scale(.92)}
+.mdui-nav-item__indicator,.tab .ico{transition:background var(--md-dur-m2) var(--md-ease-std),transform var(--md-dur-s1) var(--md-ease-std)}
+
+/* ---------- 文本输入框（outlined text field） ---------- */
+.mdui-textfield{display:block;width:100%}
+.mdui-textfield input,.name-in{
+  width:100%;height:56px;padding:0 16px;
+  border-radius:var(--md-shape-s);
+  border:1px solid var(--md-outline);background:transparent;color:var(--md-on-surface);
+  font:inherit;font-size:14px;outline:none;
+  transition:border-color var(--md-dur-s3) var(--md-ease-std),box-shadow var(--md-dur-s3) var(--md-ease-std);
+}
+.mdui-textfield input:focus,.name-in:focus{border-color:var(--md-primary);box-shadow:0 0 0 1px var(--md-primary)}
+.mdui-textfield input::placeholder,.name-in::placeholder{color:var(--text-3)}
+
+/* ---------- 图标按钮 ---------- */
+.mdui-icon-btn{
+  position:relative;overflow:hidden;
+  flex:0 0 auto;width:40px;height:40px;border-radius:var(--md-shape-full);
+  display:grid;place-items:center;color:var(--md-on-surface-variant);
+  transition:background var(--md-dur-s3) var(--md-ease-std),color var(--md-dur-s3) var(--md-ease-std);
+}
+.mdui-icon-btn:hover{background:var(--md-surface-container-highest);color:var(--md-on-surface)}
+.mdui-icon-btn:active{transform:scale(.94)}
+
+/* ---------- 分割线 ---------- */
+.mdui-divider,.hr{height:1px;background:var(--md-outline-variant);border:0;margin:20px 0}
+
+/* ---------- 图标：Material Icons filled，24x24 网格 ---------- */
+.mdui-icon{
+  display:inline-block;flex:0 0 auto;vertical-align:middle;
+  width:24px;height:24px;
+  fill:currentColor;stroke:none;
+}
+.mdui-icon--sm{width:20px;height:20px}
+.mdui-icon--xs{width:16px;height:16px}
+.mdui-icon--lg{width:28px;height:28px}
+
+/* ---------- 对话框 Dialog（M3：28px 圆角，居中，带遮罩） ---------- */
+.mdui-dialog{
+  position:absolute;inset:0;z-index:70;display:none;
+  align-items:center;justify-content:center;padding:24px;
+}
+.mdui-dialog.show{display:flex}
+.mdui-dialog__scrim{
+  position:absolute;inset:0;background:rgba(0,0,0,.42);
+  opacity:0;transition:opacity var(--md-dur-m2) var(--md-ease-std);
+}
+.mdui-dialog.show .mdui-dialog__scrim{opacity:1}
+.mdui-dialog__panel{
+  position:relative;width:100%;max-width:360px;max-height:100%;
+  display:flex;flex-direction:column;overflow:hidden;
+  background:var(--md-surface-container-high);
+  border-radius:var(--md-shape-xl);box-shadow:var(--md-elev-3);
+  /* 退出：加速曲线，先慢后快 */
+  transform:scale(.94);opacity:0;
+  transition:transform var(--md-dur-s3) var(--md-ease-acc),opacity var(--md-dur-s3) var(--md-ease-acc);
+}
+.mdui-dialog.show .mdui-dialog__panel{
+  /* 进入：减速曲线，从略小的尺度稳稳放大到位 */
+  transform:none;opacity:1;
+  transition:transform var(--md-dur-l1) var(--md-ease-dec),opacity var(--md-dur-m2) var(--md-ease-std);
+}
+.mdui-dialog__title{padding:24px 24px 0;font-size:18px;font-weight:600;line-height:1.4}
+.mdui-dialog__desc{padding:8px 24px 0;font-size:12px;line-height:1.5;color:var(--md-on-surface-variant)}
+.mdui-dialog__content{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 24px}
+/* 内容入场：面板先放大到位，内容再轻微上浮，两段错开比同时动更自然 */
+@keyframes mdRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.mdui-dialog__content.md-in{animation:mdRise var(--md-dur-l1) var(--md-ease-dec) both}
+.mdui-dialog__actions{display:flex;justify-content:flex-end;gap:8px;padding:8px 16px 16px}
+
+/* ---------- 开关 Switch（M3：52x32 轨道 + 16/24px 滑块） ---------- */
+.mdui-switch{position:relative;display:inline-flex;align-items:center;gap:16px;min-height:32px;cursor:pointer}
+.mdui-switch input{position:absolute;opacity:0;width:0;height:0}
+.mdui-switch__track{
+  position:relative;flex:0 0 auto;width:52px;height:32px;border-radius:16px;
+  background:var(--md-surface-container-highest);border:2px solid var(--md-outline);
+  transition:background var(--md-dur-m2) var(--md-ease-std),border-color var(--md-dur-m2) var(--md-ease-std);
+}
+.mdui-switch__thumb{
+  position:absolute;top:50%;left:8px;width:16px;height:16px;margin-top:-8px;border-radius:50%;
+  background:var(--md-outline);transition:transform var(--md-dur-m2) var(--md-ease-dec),
+             width var(--md-dur-m2) var(--md-ease-dec),height var(--md-dur-m2) var(--md-ease-dec),
+             margin var(--md-dur-m2) var(--md-ease-dec),background var(--md-dur-m2) var(--md-ease-std);
+}
+.mdui-switch input:checked+.mdui-switch__track{background:var(--md-primary);border-color:var(--md-primary)}
+.mdui-switch input:checked+.mdui-switch__track .mdui-switch__thumb{
+  transform:translateX(20px);width:24px;height:24px;margin-top:-12px;margin-left:-4px;
+  background:var(--md-on-primary);
+}
+
+/* ---------- 单选 Radio（M3：20px 圆环 + 10px 实心） ---------- */
+.mdui-radio{display:flex;align-items:flex-start;gap:12px;padding:12px 8px;cursor:pointer}
+.mdui-radio input{position:absolute;opacity:0;width:0;height:0}
+.mdui-radio__dot{
+  flex:0 0 auto;margin-top:2px;width:20px;height:20px;border-radius:50%;
+  border:2px solid var(--md-on-surface-variant);display:grid;place-items:center;
+  transition:border-color var(--md-dur-s3) var(--md-ease-std);
+}
+.mdui-radio__dot::after{
+  content:'';width:10px;height:10px;border-radius:50%;background:var(--md-primary);
+  transform:scale(0);transition:transform var(--md-dur-s3) var(--md-ease-dec);
+}
+.mdui-radio input:checked+.mdui-radio__dot{border-color:var(--md-primary)}
+.mdui-radio input:checked+.mdui-radio__dot::after{transform:scale(1)}
+.mdui-radio__label{flex:1 1 auto;font-size:14px;line-height:1.6}
+
+/* ---------- 复选框 Checkbox（M3：18px 圆角方块 + 对勾） ---------- */
+.mdui-checkbox{display:flex;align-items:flex-start;gap:12px;padding:10px 8px;cursor:pointer}
+.mdui-checkbox input{position:absolute;opacity:0;width:0;height:0}
+.mdui-checkbox__box{
+  flex:0 0 auto;margin-top:2px;width:18px;height:18px;border-radius:2px;
+  border:2px solid var(--md-on-surface-variant);display:grid;place-items:center;
+  transition:background var(--md-dur-s3) var(--md-ease-std),border-color var(--md-dur-s3) var(--md-ease-std);
+}
+.mdui-checkbox__box::after{
+  content:'';width:10px;height:6px;border-left:2px solid var(--md-on-primary);border-bottom:2px solid var(--md-on-primary);
+  transform:rotate(-45deg) scale(0);margin-top:-2px;transition:transform var(--md-dur-s3) var(--md-ease-dec);
+}
+.mdui-checkbox input:checked+.mdui-checkbox__box{background:var(--md-primary);border-color:var(--md-primary)}
+.mdui-checkbox input:checked+.mdui-checkbox__box::after{transform:rotate(-45deg) scale(1)}
+
+/* ---------- 折叠面板 Accordion（M3 list + expand 动效） ---------- */
+/* 0fr → 1fr 可插值，浏览器内部完成高度计算，避免 JS 读 scrollHeight 造成的强制回流 */
+.mdui-collapse__body{
+  overflow:hidden;height:0;
+  transition:height var(--md-dur-m2) var(--md-ease-std);
+}
+@supports (grid-template-rows:0fr){
+  .mdui-collapse__body{
+    height:auto;display:grid;grid-template-rows:0fr;
+    transition:grid-template-rows var(--md-dur-m2) var(--md-ease-std);
+  }
+  .mdui-collapse__body > *{min-height:0;overflow:hidden}
+  .mdui-collapse--open>.mdui-collapse__body{grid-template-rows:1fr}
+}
+@supports not (grid-template-rows:0fr){
+  .mdui-collapse--open>.mdui-collapse__body{height:auto}
+}
+.mdui-collapse__trigger svg[data-expand]{transition:transform var(--md-dur-m2) var(--md-ease-std)}
+.mdui-collapse--open .mdui-collapse__trigger svg[data-expand]{transform:rotate(180deg)}
+
+/* ---------- 选项卡 Tabs（M3：主/次级，下划线指示器） ---------- */
+.mdui-tabs{display:flex;gap:8px;border-bottom:1px solid var(--md-outline-variant);overflow-x:auto;scrollbar-width:none}
+.mdui-tabs::-webkit-scrollbar{display:none}
+.mdui-tab{
+  position:relative;flex:0 0 auto;padding:12px 16px;
+  font-size:14px;font-weight:600;color:var(--md-on-surface-variant);white-space:nowrap;
+  transition:color var(--md-dur-s3) var(--md-ease-std);
+}
+.mdui-tab::after{
+  content:'';position:absolute;left:12px;right:12px;bottom:0;height:3px;border-radius:3px 3px 0 0;
+  background:var(--md-primary);transform:scaleX(0);transition:transform var(--md-dur-m2) var(--md-ease-dec);
+}
+.mdui-tab.is-active{color:var(--md-primary)}
+.mdui-tab.is-active::after{transform:scaleX(1)}
+
+/* ---------- 悬浮按钮 FAB ---------- */
+.mdui-fab{
+  display:grid;place-items:center;width:56px;height:56px;border-radius:16px;
+  background:var(--md-primary-container);color:var(--md-on-primary-container);
+  box-shadow:var(--md-elev-1);
+  transition:box-shadow var(--md-dur-m2) var(--md-ease-std),transform var(--md-dur-s1) var(--md-ease-std);
+}
+.mdui-fab:hover{box-shadow:var(--md-elev-2)}
+.mdui-fab:active{transform:scale(.96)}
+
+/* ---------- 提示条 Banner ---------- */
+.mdui-banner{
+  display:flex;gap:12px;align-items:flex-start;padding:12px 16px;
+  background:var(--md-surface-container-highest);border-radius:var(--md-shape-m);
+  font-size:13px;line-height:1.6;color:var(--md-on-surface-variant);
+}
+.mdui-banner .mdui-icon{flex:0 0 auto;margin-top:1px}
+
+/* ---------- 提示气泡 Tooltip ---------- */
+[data-mdui-tooltip]{position:relative}
+[data-mdui-tooltip]::after{
+  content:attr(data-mdui-tooltip);
+  position:absolute;left:50%;bottom:calc(100% + 6px);transform:translate(-50%,4px);
+  padding:6px 10px;border-radius:var(--md-shape-xs);
+  background:var(--md-inverse-surface);color:var(--md-inverse-on-surface);
+  font-size:12px;line-height:1.3;white-space:nowrap;pointer-events:none;
+  opacity:0;transition:opacity var(--md-dur-s3) var(--md-ease-std),transform var(--md-dur-s3) var(--md-ease-std);
+}
+@media (hover:hover){
+  [data-mdui-tooltip]:hover::after{opacity:1;transform:translate(-50%,0)}
+}
+
+/* ---------- 排版角色 ---------- */
+.mdui-typo-headline{font-size:28px;line-height:1.24;font-weight:650;letter-spacing:-.02em}
+.mdui-typo-title{font-size:16px;line-height:1.5;font-weight:600;letter-spacing:.01em}
+.mdui-typo-body{font-size:13px;line-height:1.68;font-weight:400}
+.mdui-typo-label{font-size:11px;line-height:1.2;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.mdui-typo-caption{font-size:12px;line-height:1.5;color:var(--md-on-surface-variant)}
