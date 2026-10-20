@@ -692,6 +692,11 @@ html[data-theme="dark"] .grain{opacity:.07}
   .press-pad{width:170px;height:170px}
   .find-stage{max-width:560px;margin-inline:auto}
 }
+/* 超窄屏：主页两个 CTA 竖排铺满，按钮文字始终一行不折行 */
+@media (max-width:480px){
+  .home-cta{flex-direction:column;align-items:stretch}
+  .home-cta .mdui-btn{width:100%}
+}
 </style>
 </head>
 <body>
@@ -764,7 +769,7 @@ html[data-theme="dark"] .grain{opacity:.07}
             <div class="eyebrow">2026 大学生安全教育</div>
             <h1 class="mdui-typo-headline mt-2">人人讲安全<br><em>个个会应急</em></h1>
             <p class="mdui-typo-body mt-3">插线板冒烟了先拔哪个？室友溺水你敢不敢下水？四关走完，真出事时你不用站在原地喊救命。</p>
-            <div class="d-flex gap-2 mt-4">
+            <div class="d-flex gap-2 mt-4 flex-wrap home-cta">
               <button class="mdui-btn mdui-ripple" onclick="App.go('drill')"><svg class="mdui-icon mdui-icon--sm" style="fill:currentColor"><use href="#i-play"/></svg>开始实训</button>
               <button class="mdui-btn mdui-btn--outlined mdui-ripple" onclick="App.go('learn')">先学知识</button>
             </div>
