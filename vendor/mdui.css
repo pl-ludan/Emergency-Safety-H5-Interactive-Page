@@ -67,6 +67,8 @@ html[data-theme="dark"]{
   height:44px;padding:0 22px;border:1px solid transparent;
   border-radius:var(--md-shape-full);
   font-size:14px;font-weight:600;letter-spacing:.02em;line-height:1;
+  /* 按钮文字一律不折行：窄屏并排不下时整颗按钮换行，而不是把字拆成两行 */
+  white-space:nowrap;
   background:var(--md-primary);color:var(--md-on-primary);
   box-shadow:var(--md-elev-0);
   transition:background var(--md-dur-s3) var(--md-ease-std),box-shadow var(--md-dur-s3) var(--md-ease-std),
